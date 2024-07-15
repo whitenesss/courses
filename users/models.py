@@ -1,7 +1,8 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
+
 
 CITY_CHOICES = [
     ('Moscow', 'Moscow'),
@@ -11,7 +12,7 @@ CITY_CHOICES = [
     ('Krasnoyarsk', 'Krasnoyarsk'),
     ('Yekaterinburg', 'Yekaterinburg'),
     ('Omsk', 'Omsk'),
-    ('Tomsk', 'Tomsk'),]
+    ('Tomsk', 'Tomsk'), ]
 
 
 class User(AbstractUser):
@@ -23,7 +24,20 @@ class User(AbstractUser):
     city = models.CharField(max_length=50, choices=CITY_CHOICES, verbose_name="city", blank=True, null=True)
     is_active = models.BooleanField(verbose_name="is active", default=False)
     verification_token = models.CharField(max_length=50, blank=True, null=True, verbose_name="Verification Token")
-
+    groups = models.ManyToManyField(
+        Group,
+        related_name='custom_user_set',  # добавлено related_name для разрешения конфликта
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups',
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='custom_user_permission_set',  # добавлено related_name для разрешения конфликта
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -41,3 +55,5 @@ class User(AbstractUser):
 
     def generate_verification_token(self):
         return str(uuid.uuid4())
+
+

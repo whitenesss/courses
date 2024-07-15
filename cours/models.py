@@ -35,3 +35,23 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
+
+
+class Payment(models.Model):
+    PAYMENT_METHODS = (
+        ('cash', 'Наличные'),
+        ('transfer', 'Перевод на счёт')
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    payment_date = models.DateTimeField(auto_now_add=True)
+    paid_course = models.ForeignKey(Well, on_delete=models.CASCADE, related_name='payments', blank=True, null=True)
+    paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='payments', blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+
+    class Meta:
+        verbose_name = 'Платеж'
+        verbose_name_plural = 'Платежи'
+
+    def __str__(self):
+        return f"Payment of {self.amount} by {self.user}"
