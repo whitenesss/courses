@@ -8,22 +8,22 @@ from cours.models import Well
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = '__all__'
+        fields = "__all__"
 
 
 class WellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Well
-        fields = '__all__'
+        fields = "__all__"
 
 
 class WellDetailSerializer(serializers.ModelSerializer):
     lesson_count = SerializerMethodField()
-    lessons = LessonSerializer(source='lesson_set', many=True, read_only=True)
+    lessons = LessonSerializer(source="lesson_set", many=True, read_only=True)
 
     class Meta:
         model = Well
-        fields = ['title', 'content', 'lesson_count', 'lessons']
+        fields = ["title", "content", "lesson_count", "lessons"]
 
     def get_lesson_count(self, obj):
         return Lesson.objects.filter(well=obj).count()
@@ -32,4 +32,4 @@ class WellDetailSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = '__all__'
+        fields = "__all__"

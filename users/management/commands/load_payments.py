@@ -4,7 +4,7 @@ from cours.models import Payment, Well
 
 
 class Command(BaseCommand):
-    help = 'Loads payment data into the database'
+    help = "Loads payment data into the database"
 
     def handle(self, *args, **options):
         payment_data = [
@@ -13,7 +13,7 @@ class Command(BaseCommand):
                 "payment_date": "2023-01-01T00:00:00Z",
                 "paid_course": Well.objects.get(pk=1),
                 "amount": "100.00",
-                "payment_method": "cash"
+                "payment_method": "cash",
             }
         ]
 
@@ -21,4 +21,4 @@ class Command(BaseCommand):
             payment = Payment(**data)
             payment.save()
 
-        self.stdout.write(self.style.SUCCESS('Payment data loaded successfully!'))
+        self.stdout.write(self.style.SUCCESS("Payment data loaded successfully!"))
