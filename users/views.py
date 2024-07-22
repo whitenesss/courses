@@ -1,16 +1,30 @@
-from rest_framework.permissions import AllowAny
+from rest_framework import viewsets, permissions
 from rest_framework.generics import CreateAPIView
-
 from users.models import User
 from users.serliazers import UserSerializer
 
 
-class UserCreateAPIView(CreateAPIView):
+class UserCreateRetrieveUpdateDestroyAPIView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = (AllowAny,)  # Убедитесь, что разрешения AllowAny установлены
+
+    def get_permissions(self):
+        if self.action in ['create']:
+            self.permission_classes = (permissions.AllowAny,)
+        else:
+            self.permission_classes = (permissions.IsAuthenticated,)
+        return super().get_permissions()
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
+
+    def perform_update(self, serializer):
+        user = serializer.save()
+        if 'password' in self.request.data:
+            user.set_password(self.request.data['password'])
+            user.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()

@@ -63,13 +63,13 @@ class LessonListAPIView(generics.ListAPIView):
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (IsModer, IsAuthenticated | IsOwner,)
+    permission_classes = (IsAuthenticated, IsModer | IsOwner,)
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (IsModer, IsAuthenticated | IsOwner,)
+    permission_classes = (IsAuthenticated, IsModer | IsOwner,)
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
