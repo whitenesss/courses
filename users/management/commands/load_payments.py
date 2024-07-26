@@ -11,7 +11,7 @@ class Command(BaseCommand):
             {
                 "user": User.objects.get(pk=1),
                 "payment_date": "2023-01-01T00:00:00Z",
-                "paid_course": Well.objects.get(pk=1),
+                "paid_course": Well.objects.get(pk=2),
                 "amount": "100.00",
                 "payment_method": "cash",
             }

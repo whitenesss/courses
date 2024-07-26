@@ -64,3 +64,16 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment of {self.amount} by {self.user}"
+
+
+class Subscription(models.Model):
+    sab_well = models.ForeignKey(Well, on_delete=models.CASCADE, **NULLABLE, verbose_name='подписка на курс')
+    seb_user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE, verbose_name='кто подписан на курс')
+    sab_activ = models.BooleanField(default=True, verbose_name='подписан не подписан')
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.seb_user.email} подписан на {self.sab_well.title}'

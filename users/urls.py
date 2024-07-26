@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from cours.views import SubscriptionCreateAPIView
 from users.apps import UsersConfig
 from users.views import UserCreateRetrieveUpdateDestroyAPIView
 
@@ -16,5 +17,6 @@ urlpatterns = [
 
     path("token/", TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),
-    path("", include(router.urls))
+    path("", include(router.urls)),
+
 ]
