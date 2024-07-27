@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "users",
     "cours",
     "rest_framework_simplejwt",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
