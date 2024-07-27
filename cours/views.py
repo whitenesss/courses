@@ -14,6 +14,7 @@ from cours.serliazers import WellSerializer, WellDetailSerializer, PaymentSerial
 
 from cours.models import Lesson
 from cours.serliazers import LessonSerializer
+from cours.services import create_stripe_price, crate_stripe_session
 from users.permissions import IsModer, NotModer, IsOwner
 
 
@@ -107,3 +108,18 @@ class PaymentViewSet(viewsets.ModelViewSet):
     filters_fields = ['paid_course', 'paid_lesson', 'payment_method']
     ordering_fields = ['payment_date']
     ordering = ['payment_date']
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        # amoust_in_dollars = convert_rub_to_usd()
+        price = create_stripe_price(payment.amount)
+        session_id, payment_link = crate_stripe_session(price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
+
