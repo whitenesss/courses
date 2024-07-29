@@ -1,15 +1,26 @@
 import stripe
 from forex_python.converter import CurrencyRates
 
-stripe.api_key = "sk_test_51PhIUDGPilVWlYfYrhuL15fDnbUU7shJhXuqs0MhQUxbRrkvDSoBcETALeV035Obwcd63Xj1pU9oP2vHHyvJXmJC0090eplRkn"
+from config.settings import STRIPE_API_KEY
+
+stripe.api_key = STRIPE_API_KEY
+
+
+def get_or_create_stripe_product():
+    products = stripe.Product.list(limit=1)
+    if not products['data']:
+        product = stripe.Product.create(name="Gold Plan")
+        return product.id
+    return products['data'][0].id
 
 
 def create_stripe_price(amount):
     """создание цены в страпйпе"""
+    product_id = get_or_create_stripe_product()
     return stripe.Price.create(
         currency="usd",
-        unit_amount=int(amount*100),
-        product_data={"name": "Gold Plan"},
+        unit_amount=int(amount * 100),
+        product=product_id,
     )
 
 
