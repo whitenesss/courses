@@ -1,7 +1,9 @@
 import stripe
 from forex_python.converter import CurrencyRates
 
-stripe.api_key = "sk_test_51PhIUDGPilVWlYfYrhuL15fDnbUU7shJhXuqs0MhQUxbRrkvDSoBcETALeV035Obwcd63Xj1pU9oP2vHHyvJXmJC0090eplRkn"
+from config.settings import STRIPE_API_KEY
+
+stripe.api_key = STRIPE_API_KEY
 
 
 def get_or_create_stripe_product():
