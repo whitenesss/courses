@@ -1,7 +1,12 @@
 import stripe
+from django_celery_beat.models import PeriodicTask
 from forex_python.converter import CurrencyRates
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
+import json
+from datetime import datetime, timedelta
 
 from config.settings import STRIPE_API_KEY
+from cours.tasks import check_last_login
 
 stripe.api_key = STRIPE_API_KEY
 
@@ -31,3 +36,20 @@ def crate_stripe_session(price):
         mode="payment",
     )
     return session.get("id"), session.get("url")
+
+
+def set_schedule(*args, **kwargs):
+    schedule, created = IntervalSchedule.objects.get_or_create(
+        every=10,
+        period=IntervalSchedule.SECONDS,
+    )
+    check_last_login()
+    task_name = f'Checking last login - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+    PeriodicTask.objects.create(
+        interval=schedule,
+        name=task_name,
+        task='tasks.check_last_login',
+        expires=datetime.utcnow() + timedelta(seconds=30)
+    )
+
+

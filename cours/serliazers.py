@@ -32,7 +32,7 @@ class WellDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Well
-        fields = ["title", "content", "lesson_count", "lessons", "is_subscribed"]
+        fields = ["title", "content", "updated_at","lesson_count", "lessons", "is_subscribed"]
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user

@@ -9,6 +9,8 @@ class Well(models.Model):
     title = models.CharField(max_length=150, verbose_name="название")
     image = models.ImageField(upload_to="blog", verbose_name="изображение", **NULLABLE)
     content = models.TextField(verbose_name="содержание", **NULLABLE)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="well_owner", **NULLABLE
