@@ -15,6 +15,7 @@ from cours.serliazers import WellSerializer, WellDetailSerializer, PaymentSerial
 from cours.models import Lesson
 from cours.serliazers import LessonSerializer
 from cours.services import create_stripe_price, crate_stripe_session
+from cours.tasks import notify_subscribers
 from users.permissions import IsModer, NotModer, IsOwner
 
 
@@ -33,14 +34,19 @@ class WellViewSet(viewsets.ModelViewSet):
         well.owner = self.request.user
         well.save()
 
-    def get_permissions(self):
-        if self.action in ["create"]:
-            self.permission_classes = (NotModer,)
-        elif self.action in ["update", "retrieve"]:
-            self.permission_classes = (IsModer | IsOwner,)
-        elif self.action in ["destroy"]:
-            self.permission_classes = (NotModer, IsOwner,)
-        return super().get_permissions()
+    def perform_update(self, serializer):
+        well = serializer.save()
+        notify_subscribers.delay(well.id)
+
+
+    # def get_permissions(self):
+    #     if self.action in ["create"]:
+    #         self.permission_classes = (NotModer,)
+    #     elif self.action in ["update", "retrieve"]:
+    #         self.permission_classes = (IsModer | IsOwner,)
+    #     elif self.action in ["destroy"]:
+    #         self.permission_classes = (NotModer, IsOwner,)
+    #     return super().get_permissions()
 
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):

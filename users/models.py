@@ -24,6 +24,7 @@ class User(AbstractUser):
         upload_to="users/avatar", blank=True, null=True, verbose_name="avatar"
     )
     objects = CustomUserManager()
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
